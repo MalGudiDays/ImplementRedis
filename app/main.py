@@ -52,7 +52,8 @@ def handle_connection(connection, address):
             except KeyError:
                 response = b"$-1\r\n"
         elif b"INFO" in data:
-             response = redis_encode([f"role: {role.decode()}"])
+             response = f"role: {role.decode()}"
+             response = redis_encode(response)
 
         connection.send(response)
 
