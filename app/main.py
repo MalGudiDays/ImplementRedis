@@ -66,7 +66,7 @@ def implement_redis_ping(port):
 def main():
     parser = argparse.ArgumentParser(description="Redis-like server")
     parser.add_argument("--port", type=int, default=6379, help="Port number to listen on")
-    parser.add_argument("--replicaof", nargs=2, help="Port number to listen on")
+    parser.add_argument("--replicaof", type=str, help="Port number to listen on")
     args = parser.parse_args()
     if args.replicaof:
         role = b"slave"
