@@ -31,7 +31,8 @@ def handle_connection(connection, address):
         elif b"SET" in data:
             arr_size, *arr = data.split(b"\r\n")
             res = [el.decode("utf-8") for el in arr[3::2]]
-            print(f"res: {res}")
+            mydict[res[0]] = res[1]
+            print(f"mydict: {mydict}")
             response = b"+OK\r\n"
         connection.send(response)
 
