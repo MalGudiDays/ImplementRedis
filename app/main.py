@@ -2,7 +2,7 @@ import argparse
 import socket
 import threading  # noqa: F401
 import time
-
+dictports = {}
 
 def redis_encode(data, encoding="utf-8"):
     if not isinstance(data, list):
@@ -50,13 +50,17 @@ def handle_connection(connection, address):
                 response = redis_encode(mydict[key])
             except KeyError:
                 response = b"$-1\r\n"
-        elif b"info" in data:
-            response = b"+info\r\n"
+        elif b"INFO replication" in data:
+            if len(dictports) == 0:
+                response = b"-1\r\n"
+            elif 6379 in dictports.keys():
+                response = redis_encode([f"role:master"])
 
         connection.send(response)
 
 def implement_redis_ping(port):
     with socket.create_server(("localhost", port), reuse_port=False) as server_socket:
+        dictports[port] = server_socket
         while True:
             connection, address = server_socket.accept()
             client_thread = threading.Thread(target=handle_connection, args=(connection, address))
