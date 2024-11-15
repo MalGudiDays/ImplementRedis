@@ -16,6 +16,7 @@ def redis_encode(data, encoding="utf-8"):
     return (separator.join(encoded) + separator).encode(encoding=encoding)
 
 def handle_connection(connection, address):
+    mydict = {}
     while True:
         data = connection.recv(1024)
         if not data:
@@ -25,6 +26,14 @@ def handle_connection(connection, address):
         if b"ECHO" in data:
             arr_size, *arr = data.split(b"\r\n")
             response = redis_encode([el.decode("utf-8") for el in arr[3::2]])
+        elif b"PING" in data:
+            response = b"+PONG\r\n"
+        elif b"SET" in data:
+            arr_size, *arr = data.split(b"\r\n")
+            print(f"data is: {data}")
+            print(f"arr is: {arr}")
+            print(f"arr_size is: {arr_size}")
+            response = b"+OK\r\n"
         connection.send(response)
 
 def implement_redis_ping():
