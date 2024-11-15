@@ -45,7 +45,7 @@ def handle_connection(connection, address):
             print(f"arr: {arr}")
             print(f"key: {key}")
             print(f"mydict: {mydict}")
-            if key in mydict.keys():
+            if key.decode() in mydict.keys():
                 response = redis_encode(mydict[key.decode()])
         connection.send(response)
 
