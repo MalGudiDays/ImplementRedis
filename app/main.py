@@ -2,7 +2,7 @@ import argparse
 import socket
 import threading  # noqa: F401
 import time
-import context as ctx
+from . import context as ctx
             
 def main():
     parser = argparse.ArgumentParser(description="Redis-like server")
