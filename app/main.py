@@ -53,7 +53,7 @@ def handle_connection(connection, address):
                 response = b"$-1\r\n"
         elif b"INFO" in data:
              response = f"role: {role.decode()}"
-             response = redis_encode(response)
+             response = response.encode()
 
         connection.send(response)
 
