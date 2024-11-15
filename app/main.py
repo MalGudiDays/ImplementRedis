@@ -2,11 +2,6 @@ import socket
 import threading  # noqa: F401
 import time
 
-    mydict = {}
-
-def wait_for_1ms(milliseconds):
-    time.sleep(0.001 * milliseconds)
-
 
 def redis_encode(data, encoding="utf-8"):
     if not isinstance(data, list):
@@ -23,6 +18,7 @@ def redis_encode(data, encoding="utf-8"):
     return (separator.join(encoded) + separator).encode(encoding=encoding)
 
 def handle_connection(connection, address):
+    mydict = {}
     while True:
         data = connection.recv(1024)
         if not data:
@@ -38,6 +34,8 @@ def handle_connection(connection, address):
             arr_size, *arr = data.split(b"\r\n")
             res = [el.decode("utf-8") for el in arr[3::2]]
             mydict[res[0]] = res[1]
+            if res.size > 3:
+                threading.Timer(res[3] / 1000.0, lambda: mydict.pop(res[0], None)).start()
             print(f"mydict: {mydict}")
             response = b"+OK\r\n"
         elif b"GET" in data:
