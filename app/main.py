@@ -7,6 +7,7 @@ def handle_connection(connection, address):
         if not data:
             break
         response = b"+PONG\r\n"
+        print(data)
         if "Echo" in data:
             response = data.split("\r\n")[-2]
             ln = len(response)
