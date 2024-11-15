@@ -1,3 +1,4 @@
+import argparse
 import socket
 import threading  # noqa: F401
 import time
@@ -51,15 +52,18 @@ def handle_connection(connection, address):
                 response = b"$-1\r\n"
         connection.send(response)
 
-def implement_redis_ping():
-    with socket.create_server(("localhost", 6379), reuse_port=False) as server_socket:
+def implement_redis_ping(port):
+    with socket.create_server(("localhost", port), reuse_port=False) as server_socket:
         while True:
             connection, address = server_socket.accept()
             client_thread = threading.Thread(target=handle_connection, args=(connection, address))
             client_thread.start()
             
 def main():
-    implement_redis_ping()
+    parser = argparse.ArgumentParser(description="Redis-like server")
+    parser.add_argument("--port", type=int, default=6379, help="Port number to listen on")
+    args = parser.parse_args()
+    implement_redis_ping(args.port)
 
 
 
