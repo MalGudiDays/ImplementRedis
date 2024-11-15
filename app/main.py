@@ -31,10 +31,9 @@ def implement_redis_ping():
     with socket.create_server(("localhost", 6379), reuse_port=False) as server_socket:
         while True:
             connection, address = server_socket.accept()
-            #client_thread = threading.Thread(target=handle_connection, args=(connection, address))
-            #client_thread.start()
-            handle_connection(connection, address)
-
+            client_thread = threading.Thread(target=handle_connection, args=(connection, address))
+            client_thread.start()
+            
 def main():
     implement_redis_ping()
 
