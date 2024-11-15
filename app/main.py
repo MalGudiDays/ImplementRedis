@@ -24,7 +24,7 @@ def handle_connection(connection, address):
         print(data)
         if b"ECHO" in data:
             arr_size, *arr = data.split(b"\r\n")
-            resp = redis_encode([el.decode("utf-8") for el in arr[3::2]])
+            response = redis_encode([el.decode("utf-8") for el in arr[3::2]])
         connection.send(response)
 
 def implement_redis_ping():
