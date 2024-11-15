@@ -58,7 +58,6 @@ def handle_connection(connection, address):
 
 def implement_redis_ping(port):
     with socket.create_server(("localhost", port), reuse_port=False) as server_socket:
-        dictports[port] = server_socket
         while True:
             connection, address = server_socket.accept()
             client_thread = threading.Thread(target=handle_connection, args=(connection, address))
