@@ -86,6 +86,9 @@ class Context:
             dt = [f"REPLCONF", f"capa", f"psync2"]
             connection.sendall(self.redis_encode(dt))
             connection.recv(1024).decode()
+            dt = [f"psync", f"?", f"-1"]
+            connection.sendall(self.redis_encode(dt))
+            connection.recv(1024).decode()
             
 
 def main():
