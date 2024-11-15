@@ -7,11 +7,8 @@ def handle_connection(connection):
         connection.send(response)
 
 def implement_redis_ping():
-    with socket.create_server(("localhost", 6379), reuse_port=False) as server_socket:
-        while True:
-            connection, _ = server_socket.accept()
-            client_thread = threading.Thread(target=handle_connection, args=(connection,))
-            client_thread.start()
+    client_thread = threading.Thread(target=handle_connection, args=(connection,))
+    client_thread.start()
 
 def redis_encode(data, encoding="utf-8"):
     if not isinstance(data, list):
@@ -45,8 +42,11 @@ def handle_connection(conn, addr):
     conn.close()
 
 def main():
-    #implement_redis_ping()
-    handle_connection()
+    with socket.create_server(("localhost", 6379), reuse_port=False) as server_socket:
+        while True:
+            connection, _ = server_socket.accept()
+            #implement_redis_ping()
+            handle_connection()
 
 
 
