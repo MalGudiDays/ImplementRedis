@@ -26,6 +26,7 @@ class Context:
         return (separator.join(encoded) + separator).encode(encoding=encoding)
 
     def getResponse(self, data, mydict = {}):
+        response = b"-1\r\n"
         if b"ECHO" in data:
             arr_size, *arr = data.split(b"\r\n")
             response = self.redis_encode([el.decode("utf-8") for el in arr[3::2]])
@@ -54,6 +55,7 @@ class Context:
             dt = [f"role:{self.role.decode()}", f"master_replid:{self.replid.decode()}", f"master_repl_offset:{self.repl_offset}"]
             response = self.redis_encode(dt)
             print(f"response: {response}")
+        return response
 
     def handle_connection(self, connection, address):
         mydict = {}
@@ -61,9 +63,8 @@ class Context:
             data = connection.recv(1024)
             if not data:
                 break
-            response = b"-1\r\n"
             print(data)
-            self.getResponse(data, mydict)
+            response = self.getResponse(data, mydict)
 
             connection.send(response)
 
