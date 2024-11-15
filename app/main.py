@@ -26,7 +26,7 @@ class Context:
         print(f"encoded: {encoded}")
         return (separator.join(encoded) + separator).encode(encoding=encoding)
 
-    def getResponse(self, data, mydict = {}, connection=None):
+    def getResponse(self, data, connection=None):
         response = b"-1\r\n"
         if b"ECHO" in data:
             arr_size, *arr = data.split(b"\r\n")
@@ -38,8 +38,8 @@ class Context:
             res = [el.decode("utf-8") for el in arr[3::2]]
             print(f"res: {res}")
             if len(res) > 3:
-                threading.Timer(float(res[3]) / 1000.0, lambda: mydict.pop(res[0], None)).start()
-            print(f"mydict: {mydict}")
+                threading.Timer(float(res[3]) / 1000.0, lambda: self.mydict.pop(res[0], None)).start()
+            print(f"mydict: {self.mydict}")
             response = b"+OK\r\n"
             global replicas
             for r in replicas:
@@ -49,9 +49,9 @@ class Context:
             key = arr[-2].decode()
             print(f"arr: {arr}")
             print(f"key: {key}")
-            print(f"mydict: {mydict}")
+            print(f"mydict: {self.mydict}")
             try:
-                response = self.redis_encode(mydict[key])
+                response = self.redis_encode(self.mydict[key])
             except KeyError:
                 response = b"$-1\r\n"
         elif b"INFO" in data:
@@ -72,13 +72,12 @@ class Context:
         return response
 
     def handle_connection(self, connection, address):
-        mydict = {}
         while True:
             data = connection.recv(1024)
             if not data:
                 break
             print(data)
-            response = self.getResponse(data, mydict, connection)
+            response = self.getResponse(data, connection)
             if response:
                 connection.send(response)
 
