@@ -53,7 +53,7 @@ class Context:
                 response = b"$-1\r\n"
         elif b"INFO" in data:
             dt = [f"role:{self.role.decode()}", f"master_replid:{self.replid.decode()}", f"master_repl_offset:{self.repl_offset}"]
-            response = self.redis_encode(dt)
+            response = self.redis_encode(dt[0]+dt[1]+dt[2])
             print(f"response: {response}")
         return response
 
