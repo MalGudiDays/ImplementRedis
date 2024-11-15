@@ -1,5 +1,12 @@
 import socket
 import threading  # noqa: F401
+import time
+
+    mydict = {}
+
+def wait_for_1ms(milliseconds):
+    time.sleep(0.001 * milliseconds)
+
 
 def redis_encode(data, encoding="utf-8"):
     if not isinstance(data, list):
@@ -16,12 +23,11 @@ def redis_encode(data, encoding="utf-8"):
     return (separator.join(encoded) + separator).encode(encoding=encoding)
 
 def handle_connection(connection, address):
-    mydict = {}
     while True:
         data = connection.recv(1024)
         if not data:
             break
-        response = b"+PONG\r\n"
+        response = b"-1\r\n"
         print(data)
         if b"ECHO" in data:
             arr_size, *arr = data.split(b"\r\n")
