@@ -3,7 +3,7 @@ import socket
 import threading  # noqa: F401
 import time
 
-
+replicas: list[socket.socket] = []
 class Context:
     def __init__(self, role=b"master", port=6379, replid=b"8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb", repl_offset=0):
         self.role = role
@@ -26,7 +26,7 @@ class Context:
         print(f"encoded: {encoded}")
         return (separator.join(encoded) + separator).encode(encoding=encoding)
 
-    def getResponse(self, data, mydict = {}):
+    def getResponse(self, data, mydict = {}, connection=None):
         response = b"-1\r\n"
         if b"ECHO" in data:
             arr_size, *arr = data.split(b"\r\n")
@@ -36,12 +36,13 @@ class Context:
         elif b"SET" in data:
             arr_size, *arr = data.split(b"\r\n")
             res = [el.decode("utf-8") for el in arr[3::2]]
-            mydict[res[0]] = res[1]
             print(f"res: {res}")
             if len(res) > 3:
                 threading.Timer(float(res[3]) / 1000.0, lambda: mydict.pop(res[0], None)).start()
             print(f"mydict: {mydict}")
             response = b"+OK\r\n"
+            for r in replicas:
+                r.send(data)
         elif b"GET" in data:
             arr_size, *arr = data.split(b"\r\n")
             key = arr[-2].decode()
@@ -66,6 +67,7 @@ class Context:
             rdb_content = bytes.fromhex(rdb_hex)
             rdb_data = f"${len(rdb_content)}\r\n".encode()
             response += (rdb_data + rdb_content)
+            replicas.append(connection)
         return response
 
     def handle_connection(self, connection, address):
@@ -75,7 +77,7 @@ class Context:
             if not data:
                 break
             print(data)
-            response = self.getResponse(data, mydict)
+            response = self.getResponse(data, mydict, connection)
             if response:
                 connection.send(response)
 
