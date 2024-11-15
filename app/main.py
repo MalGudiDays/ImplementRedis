@@ -5,10 +5,12 @@ import time
 
 
 class Context:
-    def __init__(self, role=b"master", port=6379):
+    def __init__(self, role=b"master", port=6379, replid=b"8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb", repl_offset=0):
         self.role = role
         self.mydict = {}
         self.port = port
+        self.replid = replid
+        self.repl_offset = repl_offset
 
     def redis_encode(self, data, encoding="utf-8"):
         if not isinstance(data, list):
@@ -57,7 +59,8 @@ class Context:
                 except KeyError:
                     response = b"$-1\r\n"
             elif b"INFO" in data:
-                response = self.redis_encode([f"role:{self.role.decode()}"])
+                dt = [f"role:{self.role.decode()}", f"master_replid:{self.replid.decode()}", f"master_repl_offset:{self.repl_offset}"]
+                response = self.redis_encode([el.decode("utf-8") for el in dt])
 
             connection.send(response)
 
