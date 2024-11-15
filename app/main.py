@@ -75,6 +75,7 @@ class Context:
                 connection, address = server_socket.accept()
                 client_thread = threading.Thread(target=self.handle_connection, args=(connection, address))
                 client_thread.start()
+                
     def perform_handshake(self, host, port):
         with socket.create_connection((host, port)) as connection:
             response = self.redis_encode(f"PING")
@@ -88,12 +89,15 @@ def main():
     args = parser.parse_args()
     print(f"args {args}")
     role = b"master"
+    host = None
+    port = None
     if args.replicaof:
         role = b"slave"
         host, port = args.replicaof
-        perform_handshake(host, port)
 
     x = Context(role=role, port=args.port)
+    if host and port:
+        x.perform_handshake(host, port)
     x.implement_redis_ping() 
 
 
