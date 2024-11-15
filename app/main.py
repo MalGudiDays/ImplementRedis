@@ -82,8 +82,10 @@ class Context:
             connection.recv(1024).decode()
             dt = [f"REPLCONF", f"listening-port", f"{self.port}"]
             connection.sendall(self.redis_encode(dt))
+            connection.recv(1024).decode()
             dt = [f"REPLCONF", f"capa", f"psync2"]
             connection.sendall(self.redis_encode(dt))
+            connection.recv(1024).decode()
             
 
 def main():
