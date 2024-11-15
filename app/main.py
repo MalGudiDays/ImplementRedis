@@ -2,7 +2,7 @@ import argparse
 import socket
 import threading  # noqa: F401
 import time
-import context as ctx
+from context import Context as ctx
 
 def main():
     parser = argparse.ArgumentParser(description="Redis-like server")
@@ -13,7 +13,7 @@ def main():
     role = b"master"
     if args.replicaof:
         role = b"slave"
-    x = ctx.Context(role=role, port=args.port)
+    x = ctx(role=role, port=args.port)
     x.implement_redis_ping()
 
 
