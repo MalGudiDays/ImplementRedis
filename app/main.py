@@ -11,7 +11,7 @@ def main():
                     break
                 print(f"Received: {data.decode()}") 
                 response = b"+PONG\r\n"
-                connecton.sendall(response)
+                connecton.send(response)
 
 
 if __name__ == "__main__":
