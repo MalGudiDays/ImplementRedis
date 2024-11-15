@@ -22,7 +22,7 @@ def handle_connection(connection, address):
             break
         response = b"+PONG\r\n"
         print(data)
-        if "ECHO" in data:
+        if b"ECHO" in data:
             arr_size, *arr = data.split(b"\r\n")
             resp = redis_encode([el.decode("utf-8") for el in arr[3::2]])
         connection.send(response)
