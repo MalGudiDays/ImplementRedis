@@ -78,7 +78,7 @@ def main():
     if args.replicaof:
         role = b"slave"
     x = Context(role=role, port=args.port)
-    x.implement_redis_ping(args.port)
+    x.implement_redis_ping()
 
 
 
