@@ -45,8 +45,10 @@ def handle_connection(connection, address):
             print(f"arr: {arr}")
             print(f"key: {key}")
             print(f"mydict: {mydict}")
-            if key in mydict:
+            try:
                 response = redis_encode(mydict[key])
+            except KeyError:
+                response = b"$-1\r\n"
         connection.send(response)
 
 def implement_redis_ping():
