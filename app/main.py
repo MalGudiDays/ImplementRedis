@@ -3,12 +3,13 @@ import threading  # noqa: F401
 
 def handle_connection(connection):
     while True:
-        with connection.recv(32) as data:
-            if not data:
-                break
-            print(data)
-            response = redis_encode([el.decode("utf-8") for el in data[3::2]])
-            connection.send(response)
+        data = connection.recv(1024)
+        print(data)
+        if not data:
+            break
+        print(data)
+        response = redis_encode([el.decode("utf-8") for el in data[3::2]])
+        connection.send(response)
 
 def implement_redis_ping():
     with socket.create_server(("localhost", 6379), reuse_port=False) as server_socket:
