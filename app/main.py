@@ -2,8 +2,7 @@ import socket
 import threading  # noqa: F401
 
 def handle_connection(connection):
-    while connection.recv(1024):
-        arr = connection.recv(1024)
+    with connection.recv(1024) as arr:
         print(arr)
         response = redis_encode([el.decode("utf-8") for el in arr[3::2]])
         connection.send(response)
