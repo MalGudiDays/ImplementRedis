@@ -10,7 +10,7 @@ class Context:
         self.mydict = {}
         self.port = port
 
-    def redis_encode(data, encoding="utf-8"):
+    def redis_encode(self, data, encoding="utf-8"):
         if not isinstance(data, list):
             data = [data]
         separator = "\r\n"
@@ -24,7 +24,7 @@ class Context:
         print(f"encoded: {encoded}")
         return (separator.join(encoded) + separator).encode(encoding=encoding)
 
-    def handle_connection(connection, address):
+    def handle_connection(self, connection, address):
         mydict = {}
         while True:
             data = connection.recv(1024)
@@ -34,7 +34,7 @@ class Context:
             print(data)
             if b"ECHO" in data:
                 arr_size, *arr = data.split(b"\r\n")
-                response = redis_encode([el.decode("utf-8") for el in arr[3::2]])
+                response = self.redis_encode([el.decode("utf-8") for el in arr[3::2]])
             elif b"PING" in data:
                 response = b"+PONG\r\n"
             elif b"SET" in data:
@@ -53,19 +53,19 @@ class Context:
                 print(f"key: {key}")
                 print(f"mydict: {mydict}")
                 try:
-                    response = redis_encode(mydict[key])
+                    response = self.redis_encode(mydict[key])
                 except KeyError:
                     response = b"$-1\r\n"
             elif b"INFO" in data:
-                response = redis_encode([f"role: {role.decode()}"])
+                response = self.redis_encode([f"role: {role.decode()}"])
 
             connection.send(response)
 
-    def implement_redis_ping(port):
-        with socket.create_server(("localhost", port), reuse_port=False) as server_socket:
+    def implement_redis_ping(self):
+        with socket.create_server(("localhost", self.port), reuse_port=False) as server_socket:
             while True:
                 connection, address = server_socket.accept()
-                client_thread = threading.Thread(target=handle_connection, args=(connection, address))
+                client_thread = threading.Thread(target=self.handle_connection, args=(connection, address))
                 client_thread.start()
             
 def main():
