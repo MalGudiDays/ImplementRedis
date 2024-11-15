@@ -14,7 +14,7 @@ def main():
     if args.replicaof:
         role = b"slave"
     x = ctx(role=role, port=args.port)
-    x.implement_redis_ping()
+    x.implement_redis_ping() 
 
 
 
