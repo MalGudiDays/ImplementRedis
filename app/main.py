@@ -26,10 +26,7 @@ class Context:
         print(f"encoded: {encoded}")
         return (separator.join(encoded) + separator).encode(encoding=encoding)
 
-    from typing import Tuple
-
-    def getResponse(self, data, mydict = {}) -> Tuple[bytes, bool]:
-        send = True
+    def getResponse(self, data, mydict = {}):
         response = b"-1\r\n"
         if b"ECHO" in data:
             arr_size, *arr = data.split(b"\r\n")
@@ -69,7 +66,7 @@ class Context:
             rdb_content = bytes.fromhex(rdb_hex)
             rdb_data = f"${len(rdb_content)}\r\n".encode()
             response += (rdb_data + rdb_content)
-        return (response, send)
+        return response
 
     def handle_connection(self, connection, address):
         mydict = {}
@@ -79,10 +76,8 @@ class Context:
                 break
             print(data)
             response = self.getResponse(data, mydict)
-            if response[1] == False:
-                connection.send(response[0])
-            else:
-                connection.recv(1024)
+            if response:
+                connection.send(response)
 
     def implement_redis_ping(self):
         with socket.create_server(("localhost", self.port), reuse_port=False) as server_socket:
