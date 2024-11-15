@@ -41,11 +41,11 @@ def handle_connection(connection, address):
             response = b"+OK\r\n"
         elif b"GET" in data:
             arr_size, *arr = data.split(b"\r\n")
-            key = arr[-2]
+            key = arr[-2].decode()
             print(f"arr: {arr}")
             print(f"key: {key}")
             print(f"mydict: {mydict}")
-            if len(mydict) and key.decode() in mydict.keys():
+            if key in mydict:
                 response = redis_encode(mydict[key.decode()])
         connection.send(response)
 
