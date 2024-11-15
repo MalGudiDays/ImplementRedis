@@ -60,7 +60,7 @@ class Context:
                     response = b"$-1\r\n"
             elif b"INFO" in data:
                 dt = [f"role:{self.role.decode()}", f"master_replid:{self.replid.decode()}", f"master_repl_offset:{self.repl_offset}"]
-                response = self.redis_encode([el.decode("utf-8") for el in dt])
+                response = self.redis_encode([el for el in dt])
 
             connection.send(response)
 
