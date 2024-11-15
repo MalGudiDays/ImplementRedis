@@ -36,7 +36,7 @@ def handle_connection(connection, address):
             mydict[res[0]] = res[1]
             print(f"res: {res}")
             if len(res) > 3:
-                threading.Timer(res[3] / 1000.0, lambda: mydict.pop(res[0], None)).start()
+                threading.Timer(float(res[3].decode()) / 1000.0, lambda: mydict.pop(res[0], None)).start()
             print(f"mydict: {mydict}")
             response = b"+OK\r\n"
         elif b"GET" in data:
