@@ -2,7 +2,8 @@ import argparse
 import socket
 import threading  # noqa: F401
 import time
-dictports = {}
+
+role = b"master"
 
 def redis_encode(data, encoding="utf-8"):
     if not isinstance(data, list):
@@ -51,10 +52,7 @@ def handle_connection(connection, address):
             except KeyError:
                 response = b"$-1\r\n"
         elif b"INFO" in data:
-            if len(dictports) == 0:
-                response = b"-1\r\n"
-            elif 6379 in dictports.keys():
-                response = redis_encode([f"role:master"])
+             response = redis_encode([f"role: {role.decode()}"])
 
         connection.send(response)
 
@@ -69,7 +67,10 @@ def implement_redis_ping(port):
 def main():
     parser = argparse.ArgumentParser(description="Redis-like server")
     parser.add_argument("--port", type=int, default=6379, help="Port number to listen on")
+    parser.add_argument("--replicaof", nargs=2, help="Port number to listen on")
     args = parser.parse_args()
+    if args.replicaof:
+        role = b"slave"
     implement_redis_ping(args.port)
 
 
