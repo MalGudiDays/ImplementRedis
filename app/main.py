@@ -70,8 +70,7 @@ def main():
     args = parser.parse_args()
     print(f"args {args}")
     if args.replicaof:
-        master_host, master_port = args.replicaof.split()
-        print(f"master_host: {master_host}, master_port: {master_port}")
+        global role
         role = b"slave"
     implement_redis_ping(args.port)
 
