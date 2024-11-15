@@ -43,7 +43,7 @@ class Context:
             response = b"+OK\r\n"
             global replicas
             for r in replicas:
-                r.sendall(data)
+                r.sendall(data) 
         elif b"GET" in data:
             arr_size, *arr = data.split(b"\r\n")
             key = arr[-2].decode()
