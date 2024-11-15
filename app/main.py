@@ -5,11 +5,7 @@ def main():
     with socket.create_server(("localhost", 6379), reuse_port=False) as server_socket:
         while True:
             connecton, _ = server_socket.accept()
-            with connecton:
-                data = connecton.recv(1024)
-                if not data:
-                    break
-                print(f"Received: {data.decode()}") 
+            while connecton.recv(1024):
                 response = b"+PONG\r\n"
                 connecton.send(response)
 
