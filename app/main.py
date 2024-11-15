@@ -50,6 +50,9 @@ def handle_connection(connection, address):
                 response = redis_encode(mydict[key])
             except KeyError:
                 response = b"$-1\r\n"
+        elif b"info" in data:
+            response = b"+info\r\n"
+
         connection.send(response)
 
 def implement_redis_ping(port):
