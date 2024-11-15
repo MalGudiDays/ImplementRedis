@@ -13,7 +13,7 @@ def handle_connection(connection, address):
             response = f"${ln}\r\n{response}\r\n"
         connection.send(response.encode("utf-8"))
 
-def implement_redis_ping(server_socket):
+def implement_redis_ping():
     with socket.create_server(("localhost", 6379), reuse_port=False) as server_socket:
         while True:
             connection, address = server_socket.accept()
