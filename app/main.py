@@ -34,6 +34,7 @@ def handle_connection(connection, address):
             arr_size, *arr = data.split(b"\r\n")
             res = [el.decode("utf-8") for el in arr[3::2]]
             mydict[res[0]] = res[1]
+            print(f"res: {res}")
             if len(res) > 3:
                 threading.Timer(res[3] / 1000.0, lambda: mydict.pop(res[0], None)).start()
             print(f"mydict: {mydict}")
