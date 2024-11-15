@@ -59,7 +59,9 @@ class Context:
         elif b"REPLCONF" in data:
             response = b"+OK\r\n"
         elif b"psync" in data:
-            response = b"+FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0\r\n"
+            s = f"+FULLRESYNC "
+            s += f"{self.replid.decode()} {self.repl_offset}\r\n"
+            response = s.encode()
         return response
 
     def handle_connection(self, connection, address):
