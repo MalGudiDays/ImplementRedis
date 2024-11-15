@@ -50,7 +50,7 @@ def handle_connection(connection, address):
                 response = redis_encode(mydict[key])
             except KeyError:
                 response = b"$-1\r\n"
-        elif b"INFO replication" in data:
+        elif b"INFO" in data:
             if len(dictports) == 0:
                 response = b"-1\r\n"
             elif 6379 in dictports.keys():
