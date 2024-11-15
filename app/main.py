@@ -36,8 +36,9 @@ def handle_connection(connection, address):
             response = b"+OK\r\n"
         elif b"GET" in data:
             arr_size, *arr = data.split(b"\r\n")
-            key = [el.decode("utf-8") for el in arr[3::2]]
-            response = redis_encode(mydict[key])
+            key = arr[-1]
+            print(f"arr: {arr}")
+            response = redis_encode(mydict[key[0]])
         connection.send(response)
 
 def implement_redis_ping():
