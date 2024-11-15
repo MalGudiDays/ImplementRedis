@@ -57,7 +57,8 @@ class Context:
                 except KeyError:
                     response = b"$-1\r\n"
             elif b"INFO" in data:
-                response = list(self.redis_encode([f"role: {self.role.decode()}"]))
+                data = ["role:", self.role.decode()]
+                response = self.redis_encode(data)
 
             connection.send(response)
 
