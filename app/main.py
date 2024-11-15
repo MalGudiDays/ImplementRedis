@@ -88,7 +88,6 @@ class Context:
             connection.recv(1024).decode()
             dt = [f"psync", f"?", f"-1"]
             connection.sendall(self.redis_encode(dt))
-            connection.recv(1024).decode()
             
 
 def main():
