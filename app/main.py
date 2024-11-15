@@ -2,9 +2,16 @@ import socket  # noqa: F401
 
 
 def main():
-    server_socket = socket.create_server(("localhost", 6379), reuse_port=False)
-    connecton, _ = server_socket.accept()
-    connecton.sendall(b"+PONG\r\n")
+    with socket.create_server(("localhost", 6379), reuse_port=False) as server_socket:
+        while True:
+            connecton, _ = server_socket.accept()
+            with connecton:
+                data = connecton.recv(1024)
+                if not data:
+                    break
+                print(f"Received: {data.decode()}") 
+                response = b"+PONG\r\n"
+                connecton.sendall(response)
 
 
 if __name__ == "__main__":
