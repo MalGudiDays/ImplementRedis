@@ -56,6 +56,10 @@ class Context:
             dt = [f"role:{self.role.decode()}", f"master_replid:{self.replid.decode()}", f"master_repl_offset:{self.repl_offset}"]
             response = self.redis_encode(dt[0]+dt[1]+dt[2])
             print(f"response: {response}")
+        elif b"REPLCONF" in data:
+            response = b"+OK\r\n"
+        elif b"psync" in data:
+            response = b"+FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0\r\n"
         return response
 
     def handle_connection(self, connection, address):
