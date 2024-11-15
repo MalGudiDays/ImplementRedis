@@ -38,7 +38,7 @@ def handle_connection(connection, address):
             arr_size, *arr = data.split(b"\r\n")
             key = arr[-1]
             print(f"arr: {arr}")
-            response = redis_encode(mydict[key[0]])
+            response = redis_encode(mydict[key])
         connection.send(response)
 
 def implement_redis_ping():
