@@ -41,8 +41,9 @@ class Context:
                 threading.Timer(float(res[3]) / 1000.0, lambda: mydict.pop(res[0], None)).start()
             print(f"mydict: {mydict}")
             response = b"+OK\r\n"
+            global replicas
             for r in replicas:
-                r.send(data)
+                r.sendall(data)
         elif b"GET" in data:
             arr_size, *arr = data.split(b"\r\n")
             key = arr[-2].decode()
