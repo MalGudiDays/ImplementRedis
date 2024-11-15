@@ -3,7 +3,7 @@ import threading  # noqa: F401
 
 def handle_connection(connection):
     while True:
-        with connection.recv(4096) as data:
+        with connection.recv(32) as data:
             if not data:
                 break
             print(data)
