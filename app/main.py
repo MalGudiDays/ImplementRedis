@@ -30,9 +30,8 @@ def handle_connection(connection, address):
             response = b"+PONG\r\n"
         elif b"SET" in data:
             arr_size, *arr = data.split(b"\r\n")
-            print(f"data is: {data}")
-            print(f"arr is: {arr}")
-            print(f"arr_size is: {arr_size}")
+            res = redis_encode([el.decode("utf-8") for el in arr[3::2]])
+            print(f"res: {res}")
             response = b"+OK\r\n"
         connection.send(response)
 
