@@ -58,7 +58,7 @@ class Context:
             print(f"response: {response}")
         elif b"REPLCONF" in data:
             response = b"+OK\r\n"
-        elif b"psync" in data:
+        elif b"PSYNC" in data:
             s = f"+FULLRESYNC "
             s += f"{self.replid.decode()} {self.repl_offset}\r\n"
             response = s.encode()
