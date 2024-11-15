@@ -3,7 +3,7 @@ import threading  # noqa: F401
 
 def handle_connection(connection, address):
     while True:
-        data = connection.recv(1024).decode("utf-8")
+        data = connection.recv(1024).decode()
         if not data:
             break
         response = b"+PONG\r\n"
