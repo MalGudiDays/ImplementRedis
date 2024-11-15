@@ -1,6 +1,20 @@
 import socket
 import threading  # noqa: F401
 
+def redis_encode(data, encoding="utf-8"):
+    if not isinstance(data, list):
+        data = [data]
+    separator = "\r\n"
+    size = len(data)
+    encoded = []
+    for datum in data:
+        encoded.append(f"${len(datum)}")
+        encoded.append(datum)
+    if size > 1:
+        encoded.insert(0, f"*{size}")
+    print(f"encoded: {encoded}")
+    return (separator.join(encoded) + separator).encode(encoding=encoding)
+
 def handle_connection(connection, address):
     while True:
         data = connection.recv(1024).decode()
@@ -9,9 +23,8 @@ def handle_connection(connection, address):
         response = b"+PONG\r\n"
         print(data)
         if "ECHO" in data:
-            response = data.split("\r\n")[-2]
-            ln = len(response)
-            response = f"${ln}\r\n{response}\r\n"
+            arr_size, *arr = data.split(b"\r\n")
+            resp = redis_encode([el.decode("utf-8") for el in arr[3::2]])
         connection.send(response)
 
 def implement_redis_ping():
