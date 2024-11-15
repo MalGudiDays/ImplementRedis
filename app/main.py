@@ -41,6 +41,7 @@ class Context:
                 threading.Timer(float(res[3]) / 1000.0, lambda: self.mydict.pop(res[0], None)).start()
             print(f"mydict: {self.mydict}")
             response = b"+OK\r\n"
+            self.mydict[res[0]] = res[1]
             global replicas
             for r in replicas:
                 r.sendall(data) 
