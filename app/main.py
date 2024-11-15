@@ -5,9 +5,10 @@ import time
 
 
 class Context:
-    def __init__(self, role=b"master"):
+    def __init__(self, role=b"master", port=6379):
         self.role = role
         self.mydict = {}
+        self.port = port
 
     def redis_encode(data, encoding="utf-8"):
         if not isinstance(data, list):
@@ -73,10 +74,10 @@ def main():
     parser.add_argument("--replicaof", type=str, help="Port number to listen on")
     args = parser.parse_args()
     print(f"args {args}")
-    x = Context(args.port)
+    role = b"master"
     if args.replicaof:
-        x.role = b"slave"
-        
+        role = b"slave"
+    x = Context(role=role, port=args.port)
     x.implement_redis_ping(args.port)
 
 
