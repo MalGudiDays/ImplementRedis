@@ -79,6 +79,10 @@ class Context:
     def perform_handshake(self, host, port):
         with socket.create_connection((host, port)) as connection:
             connection.sendall(b"*1\r\n$4\r\nPING\r\n")
+            dt = [f"REPLCONF", f"listening-port", f"{self.port}"]
+            connection.sendall(self.redis_encode(dt))
+            dt = [f"REPLCONF", f"capa", f"psync2"]
+            connection.sendall(self.redis_encode(dt))
             
 
 def main():
